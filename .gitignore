@@ -8,6 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+.vscode
 env/
 build/
 develop-eggs/
@@ -34,6 +35,8 @@ var/
 pip-log.txt
 pip-delete-this-directory.txt
 enrol_mail_20150507.tgz
+tools/demo_inf_gain.py
+
 
 # Unit test / coverage reports
 htmlcov/
