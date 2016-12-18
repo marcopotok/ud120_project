@@ -67,6 +67,6 @@ print(n_no_payments, round(n_no_payments / n_people,3))
 print(n_no_pay_poi, round(n_no_pay_poi / n_poi, 3))
 
 # For now, the takeaway message is to be very careful about
-#  introducing features that come from different sources
-#  depending on the class! It’s a classic way to accidentally
-#  introduce biases and mistakes.
+# introducing features that come from different sources
+# depending on the class! It’s a classic way to accidentally
+# introduce biases and mistakes.
