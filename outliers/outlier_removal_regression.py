@@ -9,8 +9,8 @@ from outlier_cleaner import outlierCleaner
 
 
 ### load up some practice data with outliers in it
-ages = pickle.load( open("practice_outliers_ages.pkl", "r") )
-net_worths = pickle.load( open("practice_outliers_net_worths.pkl", "r") )
+ages = pickle.load( open("practice_outliers_ages_fixed.pkl", "rb") )
+net_worths = pickle.load( open("practice_outliers_net_worths_fixed.pkl", "rb") )
 
 
 
@@ -25,38 +25,34 @@ ages_train, ages_test, net_worths_train, net_worths_test = train_test_split(ages
 
 ### fill in a regression here!  Name the regression object reg so that
 ### the plotting code below works, and you can see what your regression looks like
+from sklearn import linear_model
+
+reg = linear_model.LinearRegression()
+reg.fit(ages_train, net_worths_train)
+
+print("Slope:", reg.coef_)
+print("Intercept:", reg.intercept_)
+
+print("Score on train:", reg.score(ages_train, net_worths_train))
+print("Score on test:", reg.score(ages_test, net_worths_test))
 
 
-
-
-
-
-
-
-
-
-
-try:
-    plt.plot(ages, reg.predict(ages), color="blue")
-except NameError:
-    pass
-plt.scatter(ages, net_worths)
-plt.show()
+# try:
+#     plt.plot(ages, reg.predict(ages), color="blue")
+# except NameError:
+#     pass
+# plt.scatter(ages, net_worths)
+# plt.show()
 
 
 ### identify and remove the most outlier-y points
 cleaned_data = []
 try:
     predictions = reg.predict(ages_train)
-    cleaned_data = outlierCleaner( predictions, ages_train, net_worths_train )
+    cleaned_data, removed = outlierCleaner( predictions, ages_train, net_worths_train )
 except NameError:
-    print "your regression object doesn't exist, or isn't name reg"
-    print "can't make predictions to use in identifying outliers"
-
-
-
-
-
+    print("your regression object doesn't exist, or isn't name reg")
+    print("can't make predictions to use in identifying outliers")
 
 
 ### only run this code if cleaned_data is returning data
@@ -65,20 +61,30 @@ if len(cleaned_data) > 0:
     ages       = numpy.reshape( numpy.array(ages), (len(ages), 1))
     net_worths = numpy.reshape( numpy.array(net_worths), (len(net_worths), 1))
 
+    a_r, n_r, e_r = zip(*removed)
+    a_r = numpy.reshape(numpy.array(a_r), (len(a_r), 1))
+    n_r = numpy.reshape( numpy.array(n_r), (len(n_r), 1))
     ### refit your cleaned data!
     try:
         reg.fit(ages, net_worths)
         plt.plot(ages, reg.predict(ages), color="blue")
     except NameError:
-        print "you don't seem to have regression imported/created,"
-        print "   or else your regression object isn't named reg"
-        print "   either way, only draw the scatter plot of the cleaned data"
-    plt.scatter(ages, net_worths)
+        print("you don't seem to have regression imported/created,")
+        print ("   or else your regression object isn't named reg")
+        print ("   either way, only draw the scatter plot of the cleaned data")
+
+    print("Slope:", reg.coef_)
+    print("Intercept:", reg.intercept_)
+
+    # print("Score on train:", reg.score(ages_train, net_worths_train))
+    print("Score on test:", reg.score(ages_test, net_worths_test))
+
+    plt.scatter(ages, net_worths, color="green")
+    plt.scatter(a_r, n_r, color= "r")
     plt.xlabel("ages")
     plt.ylabel("net worths")
     plt.show()
 
 
 else:
-    print "outlierCleaner() is returning an empty list, no refitting to be done"
-
+    print ("outlierCleaner() is returning an empty list, no refitting to be done")
