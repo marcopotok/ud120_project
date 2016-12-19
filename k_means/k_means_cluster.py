@@ -76,7 +76,7 @@ pred = clf.predict(finance_features)
 # so that the figure gets saved to a different file
 try:
     Draw(pred, finance_features, poi, mark_poi=False,
-         name="clusters_tot_pay.pdf", f1_name=feature_1, f2_name=feature_2)
+         name="clusters_scale.pdf", f1_name=feature_1, f2_name=feature_2)
 except NameError:
     print("no predictions object named pred found, no clusters to plot")
 
@@ -85,13 +85,23 @@ salaries = []
 for k,v in data_dict.items():
     ex_stock = v["exercised_stock_options"]
     if ex_stock != "NaN":
-        exercised_stock_options.append(int(ex_stock))
+        exercised_stock_options.append(float(ex_stock))
     sal = v["salary"]
     if sal != "NaN":
-        salaries.append(int(sal))
+        salaries.append(float(sal))
+
+from sklearn.preprocessing import MinMaxScaler
+
 
 print("Max stock:", max(exercised_stock_options))
 print("Min stock:", min(exercised_stock_options))
 
+
 print("Max salary:", max(salaries))
 print("Min salary:", min(salaries))
+
+scaler = MinMaxScaler()
+exercised_stock_options = scaler.fit(numpy.array(exercised_stock_options))
+print("1M Stock:", scaler.transform(numpy.array([10.0**6])))
+salaries = scaler.fit(numpy.array(salaries))
+print("200k Salary:", scaler.transform(numpy.array([10.0**6])))
